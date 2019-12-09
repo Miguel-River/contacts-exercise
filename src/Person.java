@@ -1,5 +1,5 @@
 public class Person {
-    //init
+    //constructor
     public Person(String nameP, String numP){
         this.name = nameP;
         this.phoneNumber = numP;
@@ -15,6 +15,9 @@ public class Person {
     }
     public String getPhoneNumber(){
         return this.phoneNumber;
+    }
+    public String getContactInfo() {
+        return this.name + " " + this.phoneNumber;
     }
 
     public void setName(String name) {

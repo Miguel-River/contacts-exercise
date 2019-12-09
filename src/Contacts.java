@@ -15,26 +15,82 @@ public class Contacts {
     final static String fileName = "contacts.txt";
     private static boolean run = true;
 
-    public static void viewAll(List<Person> n){
+    public static Path directory = Paths.get(dir);
+    public static Path path = Paths.get(dir, fileName);
+
+    public static List<Person> newLines = new ArrayList<>();
+
+    public static void menu() {
+        System.out.println("What would you like to do(enter a number)?\n" +
+                "1: View all contacts\n" +
+                "2: Add a new contact\n" +
+                "3: Search for a contact\n" +
+                "4: Delete a contact\n" +
+                "5: Exit\n");
+        String input = scanner.nextLine();
+        switch (input){
+            case "1":{
+                viewAll(newLines);
+                break;
+            }
+            case "2":{
+                addContact(newLines);
+                break;
+            }
+            case "3":{
+
+                break;
+            }
+            case "4":{
+
+                break;
+            }
+            case "5":{
+                run = false;
+                break;
+            }
+            default:{
+                System.out.println("Please enter a valid command");
+                break;
+            }
+        }
+    }
+
+    public static List<String> openFile() {
+        try {
+            return Files.readAllLines(Paths.get(dir, fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public static void viewAll(List<Person> n){ // displays all contacts
         for (Person item : n) {
             System.out.println(item.getName() + ": " + item.getPhoneNumber());
         }
     }
-    public static void addContact(List<Person> list){
+
+    public static void addContact(List<Person> list){ // adds contact to the List
         System.out.println("What is their name?");
         String name = scanner.nextLine();
         System.out.println("What is their phone number?");
         String num = scanner.nextLine();
         list.add(new Person(name, num));
-        System.out.println(list.get(list.size() - 1).getName() + " " + list.get(list.size() - 1).getPhoneNumber());
+//        System.out.println(list.get(list.size() - 1).getName() + " " + list.get(list.size() - 1).getPhoneNumber());
     }
 
+    public static void writeContacts(Path path, ArrayList<Person> contacts) { // writes all contacts into .txt file
+        for (Person contact : contacts) {
+            try {
+                Files.writeString(path, contact.getContactInfo());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    public static void main(String[] args) {
-
-        Path directory = Paths.get(dir);
-        Path path = Paths.get(dir, fileName);
-
+    public static void checkFiles() {
         if (!Files.exists(directory)) {
             try {
                 Files.createDirectories(directory);
@@ -49,49 +105,12 @@ public class Contacts {
                 e.printStackTrace();
             }
         }
+    }
 
-        while (run) {
-            try {
-                List<String> lines = Files.readAllLines(Paths.get(dir, fileName));
-                List<Person> newLines = new ArrayList<>();
 
-                System.out.println("What would you like to do(enter a number)?\n" +
-                        "1: View all contacts\n" +
-                        "2: Add a new contact\n" +
-                        "3: Search for a contact\n" +
-                        "4: Delete a contact\n" +
-                        "5: Exit\n");
-                String input = scanner.nextLine();
-                switch (input){
-                    case "1":{
-                        viewAll(newLines);
-                        break;
-                    }
-                    case "2":{
-                        addContact(newLines);
-                        break;
-                    }
-                    case "3":{
+    public static void main(String[] args) {
+        checkFiles();
+        menu();
 
-                        break;
-                    }
-                    case "4":{
-
-                        break;
-                    }
-                    case "5":{
-                        run = false;
-                        break;
-                    }
-                    default:{
-                        System.out.println("Please enter a valid command");
-                        break;
-                    }
-                }
-
-            } catch (IOException e) {
-                System.out.println("no work-\ning");
-            }
-        }
     }
 }
