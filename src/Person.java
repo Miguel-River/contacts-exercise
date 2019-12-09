@@ -16,4 +16,11 @@ public class Person {
     public String getPhoneNumber(){
         return this.phoneNumber;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setPhoneNumber(String number) {
+        this.phoneNumber = number;
+    }
 }

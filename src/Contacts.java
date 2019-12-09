@@ -11,6 +11,7 @@ public class Contacts {
 
     final static String dir = "contacts";
     final static String fileName = "contacts.txt";
+    private static boolean run = true;
 
     public static void viewAll(List<String> n){
         for (String item : n) {
@@ -39,7 +40,7 @@ public class Contacts {
             }
         }
 
-        while (true) {
+        while (run) {
             try {
                 Scanner scanner = new Scanner(System.in);
                 List<String> lines = Files.readAllLines(Paths.get(dir, fileName));
@@ -70,7 +71,7 @@ public class Contacts {
                         break;
                     }
                     case "5":{
-
+                        run = false;
                         break;
                     }
                     default:{
