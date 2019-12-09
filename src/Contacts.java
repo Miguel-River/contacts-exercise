@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -30,7 +31,7 @@ public class Contacts {
         String input = scanner.nextLine();
         switch (input){
             case "1":{
-                viewAll(newLines);
+                viewAll();
                 break;
             }
             case "2":{
@@ -55,10 +56,14 @@ public class Contacts {
             }
         }
     }
-
     public static List<String> openFile() {
         try {
-            return Files.readAllLines(Paths.get(dir, fileName));
+            List<String> tempLines = Files.readAllLines(Paths.get(dir, fileName));
+            List<Person> tempPersons = new ArrayList<Person>();
+            for (String i : tempLines){
+                tempPersons.add(new Person("name", "143824"));
+            }
+//            return ;
         } catch (IOException e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -77,13 +82,14 @@ public class Contacts {
         System.out.println("What is their phone number?");
         String num = scanner.nextLine();
         list.add(new Person(name, num));
+        updateContacts(path, (ArrayList<Person>) list);
 //        System.out.println(list.get(list.size() - 1).getName() + " " + list.get(list.size() - 1).getPhoneNumber());
     }
 
-    public static void writeContacts(Path path, ArrayList<Person> contacts) { // writes all contacts into .txt file
+    public static void updateContacts(Path path, ArrayList<Person> contacts) { // writes all contacts into .txt file
         for (Person contact : contacts) {
             try {
-                Files.writeString(path, contact.getContactInfo());
+                Files.writeString(path, contact.getContactInfo(), StandardOpenOption.APPEND);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -109,8 +115,9 @@ public class Contacts {
 
 
     public static void main(String[] args) {
-        checkFiles();
-        menu();
-
+        while (run) {
+            checkFiles();
+            menu();
+        }
     }
 }

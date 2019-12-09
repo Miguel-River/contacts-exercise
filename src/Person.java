@@ -17,7 +17,7 @@ public class Person {
         return this.phoneNumber;
     }
     public String getContactInfo() {
-        return this.name + " " + this.phoneNumber;
+        return this.name + " " + this.phoneNumber + "\n";
     }
 
     public void setName(String name) {
