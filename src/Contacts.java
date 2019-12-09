@@ -9,13 +9,23 @@ import java.util.Scanner;
 
 public class Contacts {
 
+    public static Scanner scanner = new Scanner(System.in);
+
     final static String dir = "contacts";
     final static String fileName = "contacts.txt";
 
-    public static void viewAll(List<String> n){
-        for (String item : n) {
-            System.out.println(item);
+    public static void viewAll(List<Person> n){
+        for (Person item : n) {
+            System.out.println(item.getName() + ": " + item.getPhoneNumber());
         }
+    }
+    public static void addContact(List<Person> list){
+        System.out.println("What is their name?");
+        String name = scanner.nextLine();
+        System.out.println("What is their phone number?");
+        String num = scanner.nextLine();
+        list.add(new Person(name, num));
+        System.out.println(list.get(list.size() - 1).getName() + " " + list.get(list.size() - 1).getPhoneNumber());
     }
 
 
@@ -41,9 +51,8 @@ public class Contacts {
 
         while (true) {
             try {
-                Scanner scanner = new Scanner(System.in);
                 List<String> lines = Files.readAllLines(Paths.get(dir, fileName));
-                List<String> newLines = new ArrayList<>();
+                List<Person> newLines = new ArrayList<>();
 
                 System.out.println("What would you like to do(enter a number)?\n" +
                         "1: View all contacts\n" +
@@ -58,7 +67,7 @@ public class Contacts {
                         break;
                     }
                     case "2":{
-
+                        addContact(newLines);
                         break;
                     }
                     case "3":{
