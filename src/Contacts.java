@@ -20,12 +20,12 @@ public class Contacts {
     public static Path directory = Paths.get(dir);
     public static Path path = Paths.get(dir, fileName);
 
-    public static List<Person> newLines = new ArrayList<>(); // contact Person Objects in List TODO: would like to change name to allContacts
+    public static List<Person> pulledAsPerson = new ArrayList<>(); // contact Person Objects in List TODO: would like to change name to allContacts
     public static List<String> pulledContacts = new ArrayList<>(); // pulled all contacts from contacts.txt
 
     // ----- display all contacts -----
     public static void displayAllContacts() {
-        for (Person contact : newLines) {
+        for (Person contact : pulledAsPerson) {
             System.out.printf("Name: %s Phone: %s\n", contact.getName(), contact.getPhoneNumber());
         }
     }
@@ -34,30 +34,37 @@ public class Contacts {
     // ----- grab all existing contacts -----  TODO: need to make a method to format these 'Strings' into Person objects which are then added to 'newLines' so we may edit contacts in the future
     public static void grabContacts() {        //DONE
         try {
+//            List<Person> temp = new ArrayList<>();
             pulledContacts = Files.readAllLines(Paths.get(dir,fileName));
-            List<Person> temp = new ArrayList<>();
+            pulledAsPerson.clear();
             for (String i : pulledContacts) {
-                temp.add(new Person( i.substring(0, i.indexOf("|")), i.substring(i.indexOf("|") + 1)));
+                pulledAsPerson.add(new Person( i.substring(0, i.indexOf("|")), i.substring(i.indexOf("|") + 1)));
             }
-            newLines = temp;
+
         } catch (IOException e)
         {
             e.printStackTrace();
         }
+//        return null;
     }
 //    ----------------------------------------
-
     public static void addContact(){ // adds contact to the List and updates the txt file
         System.out.println("What is their name?");
         String name = scanner.nextLine();
         System.out.println("What is their phone number?");
         String num = scanner.nextLine();
-        newLines.add(new Person(name, num));
-        updateContacts(path, (ArrayList<Person>) newLines);
+        pulledAsPerson.add(new Person(name, num));
+        updateContacts();
     }
 
-    public static void updateContacts(Path path, ArrayList<Person> contacts) { // writes all contacts into .txt file
-        for (Person contact : contacts) {
+    public static void updateContacts() { // writes all contacts into .txt file
+//        grabContacts();
+        try {
+            Files.writeString(path, "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (Person contact : pulledAsPerson) {
             try {
                 Files.writeString(path, contact.getContactInfo(), StandardOpenOption.APPEND); //
             } catch (IOException e) {
@@ -88,7 +95,7 @@ public class Contacts {
         String search = scanner.nextLine();
         System.out.println("Results:");
         boolean found = false;
-        for (Person i : newLines){
+        for (Person i : pulledAsPerson){
             if (i.getName().equalsIgnoreCase(search) || i.getName().contains(search) || i.getPhoneNumber().contains(search)){
                 System.out.printf("Name: %s Phone: %s\n", i.getName(), i.getPhoneNumber());
                 found = true;
@@ -100,16 +107,16 @@ public class Contacts {
     }
 
     public static void delete(){
-        for (int i = 0; i < newLines.size(); i++) {
-            System.out.printf("%s Name: %s Phone: %s\n", i + 1, newLines.get(i).getName(), newLines.get(i).getPhoneNumber());
+        for (int i = 0; i < pulledAsPerson.size(); i++) {
+            System.out.printf("%s Name: %s Phone: %s\n", i + 1, pulledAsPerson.get(i).getName(), pulledAsPerson.get(i).getPhoneNumber());
         }
         while (true) {
             try {
                 System.out.println("Enter the id you would like to delete:");
                 int input = intScanner.nextInt();
-                System.out.printf("Removing '%s' from contacts\n", newLines.get(input - 1).getName());
-                newLines.remove(input - 1);
-                updateContacts(path, (ArrayList<Person>) newLines);
+                System.out.printf("Removing '%s' from contacts\n", pulledAsPerson.get(input - 1).getName());
+                pulledAsPerson.remove(input - 1);
+                updateContacts();
                 break;
             } catch (Exception e){
                 System.out.println("Invalid input, please enter a valid option.");
@@ -123,7 +130,7 @@ public class Contacts {
                 "2: Add a new contact\n" +
                 "3: Search for a contact\n" +
                 "4: Delete a contact\n" +
-                "5: Exit\n");
+                "5: Exit");
         String input = scanner.nextLine();
         switch (input){
             case "1":{
@@ -158,6 +165,7 @@ public class Contacts {
             checkFiles();
             grabContacts();
             menu();
+//            updateContacts();
         }
     }
 }
