@@ -19,7 +19,8 @@ public class Contacts {
     public static Path directory = Paths.get(dir);
     public static Path path = Paths.get(dir, fileName);
 
-    public static List<Person> newLines = new ArrayList<>();
+    public static List<Person> newLines = new ArrayList<>(); // contact Person Objects in List TODO: would like to change name to allContacts
+    public static List<String> pulledContacts = new ArrayList<>(); // pulled all contacts from contacts.txt
 
     public static void menu() {
         System.out.println("What would you like to do(enter a number)?\n" +
@@ -31,11 +32,13 @@ public class Contacts {
         String input = scanner.nextLine();
         switch (input){
             case "1":{
-                viewAll();
+//                viewAll();
+                displayAllContacts();
                 break;
             }
             case "2":{
-                addContact(newLines);
+//                addContact(newLines);
+                addToContacts();
                 break;
             }
             case "3":{
@@ -56,7 +59,42 @@ public class Contacts {
             }
         }
     }
-    public static List<String> openFile() {
+
+    // ----- create contact -----
+    public static Person createContact() {
+        System.out.println("Enter a name");
+        String name = scanner.nextLine();
+        System.out.println("Enter a phone number");
+        String phoneNumber = scanner.next();
+        return new Person(name,phoneNumber);
+    }
+
+    // ----- add to existing contact list -----
+    public static void addToContacts() {
+        Person person = createContact(); // possible recursion inside this createContact method to guarantee correct naming formats
+        newLines.add(person);
+    }
+
+    // ----- display all contacts -----
+    public static void displayAllContacts() {
+        for (Person contact : newLines) {
+            System.out.printf("Name: %s Phone: %s", contact.getName(), contact.getPhoneNumber());
+        }
+    }
+
+    // ----- grab all existing contacts ----- TODO: need to make a method to format these 'Strings' into Person objects which are then added to 'newLines' so we may edit contacts in the future
+    public static void grabContacts() {
+        try {
+            pulledContacts = Files.readAllLines(Paths.get(dir,fileName));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+//    ----------------------------------------
+
+
+    public static void openFile() {
         try {
             List<String> tempLines = Files.readAllLines(Paths.get(dir, fileName));
             List<Person> tempPersons = new ArrayList<Person>();
@@ -66,7 +104,7 @@ public class Contacts {
 //            return ;
         } catch (IOException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+//            return new ArrayList<>();
         }
     }
 
@@ -112,6 +150,19 @@ public class Contacts {
             }
         }
     }
+
+    public static void confirm() {
+        System.out.println("Would you like to continue? (y/n)");
+        String userResponse = scanner.next();
+        if (userResponse.equalsIgnoreCase("y") || userResponse.equalsIgnoreCase("yes")) {
+            menu();
+        } else {
+            run = false;
+        }
+    }
+
+
+
 
 
     public static void main(String[] args) {
